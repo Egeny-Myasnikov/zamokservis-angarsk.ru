@@ -1,0 +1,499 @@
+@charset" utf-8";
+
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    border: 0;
+}
+
+// --- vars
+@primary-color: #3E3A71;
+@primary-color-opacity: rgba(62, 58, 113, .5);
+@main-bg: rgb(218, 218, 218);
+@white: #eee;
+@link-color: #eee;
+@link-color-hover: rgb(182, 182, 182);
+@transition: .5s linear;
+@phone-bg: linear-gradient(rgb(0, 255, 0), rgb(0, 122, 0), rgb(0, 255, 0));
+@phone-color: rgb(0, 170, 0);
+@phone-color-hover: rgb(0, 204, 0);
+@widthBlock: 25vw;
+@color-red: red;
+@circle-link-size: 5vw;
+
+
+//--- mixins
+
+.red {
+    color: red;
+}
+
+.display(@d, @j-c, @a-i) {
+    display: @d;
+    justify-content: @j-c;
+    align-items: @a-i;
+}
+
+.circle(@size, @bg, @color, @padding) {
+    width: @size;
+    height: @size;
+    background: @bg;
+    color: @color;
+    padding: @padding;
+    transition: @transition;
+    border-radius: 50%;
+}
+
+//---default
+
+@font-face {
+    font-family: "MOD";
+    src: url("fonts/MOD.ttf");
+}
+
+
+
+a {
+    color: @link-color;
+    text-decoration: none;
+    transition: @transition;
+    margin: 0 1vw;
+    .display(flex, center, center);
+
+    &:hover {
+        color: @link-color-hover;
+    }
+}
+
+i.fa {
+    margin: 0 1vw;
+    padding: 0.5vw;
+    font-size: 1.5em;
+
+}
+
+.fa-phone,
+.fa-whatsapp,
+.fa-map-marker,
+.fa-envelope-o {
+    color: @phone-color;
+    transition: @transition;
+
+    &:hover {
+        color: @phone-color-hover;
+    }
+}
+
+.fa-map-marker {
+    position: relative;
+    text-align: center;
+
+
+    &::after {
+        content: 'Мы на карте';
+        padding: 20px;
+        display: block;
+        font-size: 0.7em;
+        color: #fff;
+    }
+
+}
+
+i.fa.fa-close {
+    color: red;
+    font-size: 3em;
+    position: absolute;
+    right: 0;
+    top: 0;
+    cursor: pointer;
+}
+
+
+.circle-link {
+    .circle(@circle-link-size, @phone-bg, @link-color, .1vw);
+    position: fixed;
+    bottom: 10px;
+    z-index: 100;
+    overflow: hidden;
+
+    .fa-phone,
+    .fa-envelope-o,
+    .fa-whatsapp {
+        color: @link-color;
+        text-shadow: 1px 1px 5px #000;
+        font-size: 1.1em;
+    }
+
+    &:hover .fa-phone {
+        transform: scale(1.05) rotate(45deg);
+    }
+}
+
+.position-email,
+.position-phone,
+.position-whatsapp {
+
+    &::after,
+    &::before {
+        .display(grid, center, center);
+        color: #000;
+        position: absolute;
+        top: 15%;
+        left: 0;
+        width: 200%;
+        height: 80%;
+        background: rgba(255, 255, 255, 0.5);
+        transform: translate(0%);
+        transition: @transition;
+        opacity: 0;
+    }
+
+    &::after {
+        content: attr(title);
+
+    }
+
+    &::before {
+        content: attr(data-title);
+        letter-spacing: 5px;
+    }
+
+    &:hover::after,
+    &:hover::before {
+        opacity: 1;
+    }
+
+    &:hover {
+        overflow: visible;
+        transition: @transition;
+    }
+}
+
+.position-email {
+    left: 0vw;
+
+    &:hover::after {
+        transform: translate(50%);
+    }
+
+    &:hover::before {
+        transform: translate(150%);
+    }
+}
+
+.position-phone {
+    left: 50vw;
+    transform: translate(-70%);
+
+    &:hover::after {
+        transform: translate(-100%);
+    }
+
+    &:hover::before {
+        transform: translate(50%);
+    }
+}
+
+.position-whatsapp {
+    right: 0vw;
+
+    &:hover::after {
+        transform: translate(-100%);
+    }
+
+    &:hover::before {
+        transform: translate(-200%);
+    }
+}
+
+
+h1,
+h2,
+h3 {
+    line-height: 6vw;
+    margin: 3vw 0;
+
+}
+
+img {
+
+    width: 100%;
+    height: 100%;
+    border-radius: 20px;
+    object-fit: cover;
+    transition: @transition;
+}
+
+.modal-map {
+
+    &:before {
+        content: "";
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 10;
+    }
+
+    &:target {
+
+        &:before {
+            display: block;
+        }
+
+        .map {
+            transform: translate(0, 0);
+        }
+
+    }
+
+}
+
+.map {
+    transform: translate(0, -150%);
+    .display(flex, center, start);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 50;
+    background: @primary-color;
+    transition: @transition;
+
+    .address {
+        width: 50%;
+        color: #fff;
+        text-shadow: 1px 1px 3px #000;
+        padding: 2vw;
+
+        h3 {
+            text-align: center;
+            font-size: 2.5em;
+        }
+
+        h2 {
+                font-size: 1em;
+                margin: 0;
+                line-height: 2em;
+
+            &::first-letter {
+                color: red;
+            }
+        }
+
+        address {
+            font-size: 1.5em;
+            line-height: 2em;
+            letter-spacing: .2em;
+
+            span {
+                color: @phone-color-hover;
+                font-weight: bold;
+                font-size: 1.2em;
+            }
+        }
+    }
+
+    img {
+        width: 50%;
+    }
+
+}
+
+//---/default
+
+body {
+    font-size: 1.5vw;
+
+}
+
+.main {
+    width: 100%;
+    background: @main-bg;
+}
+
+nav {
+    .display(flex, space-between, center);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 6vw;
+    background: @primary-color;
+    padding: 1vw 0;
+    z-index: 3000;
+
+}
+
+.logo {
+    margin-left: 1vw;
+    padding: 1vw;
+    width: 20vw;
+    height: 6vw;
+    .display(flex, center, center);
+    font-family: "MOD";
+
+    img {
+        width: unset;
+        height: 100%;
+        margin-right: 2vw;
+    }
+
+    h3 {
+        text-shadow: 1px 1px 3px #000;
+        color: @white;
+
+        &::first-letter,
+        span {
+            .red();
+            font-size: 1.5em;
+        }
+
+
+    }
+}
+
+.contacts {
+    display: flex;
+    margin-right: 2vw;
+}
+
+header {
+    color: @white;
+    padding: 2vw;
+    .display(flex, center, start);
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8)),
+        url(img/bg2.webp) no-repeat center center fixed;
+    background-size: cover;
+    min-height: 100vh;
+
+    hgroup {
+        padding: 0vw;
+        text-shadow: 3px 3px 10px #000,
+            -5px -5px 1px @primary-color;
+        font-size: 1.5em;
+        text-align: center;
+
+        h1 {
+            &::first-letter {
+                color: @color-red;
+                font-size: 1.3em;
+            }
+        }
+    }
+}
+
+.content {
+    padding: 2vw;
+
+    h3 {
+        font-size: 2.3em;
+        text-align: center;
+        margin: 1vw 0 3vw 0;
+        font-family: "MOD";
+        color: #333;
+    }
+
+
+}
+
+
+.services {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-content: start;
+
+    .block {
+        width: @widthBlock;
+        display: grid;
+        justify-content: center;
+        align-content: start;
+        margin-bottom: 10vw;
+        position: relative;
+
+        &::after {
+            content: '';
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, @primary-color, transparent, @primary-color);
+            position: absolute;
+            left: 0;
+            bottom: 0;
+        }
+
+        .img {
+            width: @widthBlock;
+            height: @widthBlock;
+            overflow: hidden;
+        }
+
+        &:hover .img img {
+            transform: scale(1.1);
+
+        }
+
+
+        .info {
+            padding: 2vw;
+            text-align: center;
+
+            h2 {
+                line-height: 2vw;
+                margin-bottom: 3vw;
+
+                &::first-letter {
+                    color: @color-red;
+                    font-size: 1.3em;
+                }
+            }
+        }
+    }
+}
+
+
+
+footer {
+    background: @primary-color;
+    color: @white;
+    .display(flex, space-between, center);
+    padding-bottom: 10vw;
+
+}
+
+.feedback {
+    padding: 2vw;
+    margin: 0 3vw;
+    display: grid;
+    justify-items: center;
+    align-items: center;
+    grid-gap: 2vw;
+    background: rgba(0, 0, 0, 0.5);
+
+    input {
+        padding: .7vw;
+        margin: .5vw;
+        font-size: 1em;
+
+        &[type="submit"] {
+            background: @phone-color;
+            color: @white;
+            transition: @transition;
+            cursor: pointer;
+
+            &:hover {
+                background: @phone-color-hover;
+                color: @primary-color;
+                border-radius: 10px;
+            }
+        }
+
+    }
+}
+
+
+
+@import "adaptive";
